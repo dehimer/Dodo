@@ -1,0 +1,167 @@
+<html>
+	<head>
+		<link href="style.css"  rel="stylesheet" type="text/css"></link>
+		<script type="text/javascript" src="libs/underscore.js"></script>
+		<script type="text/javascript" src="libs/jquery.min.js"></script>
+		<script type="text/javascript" src="libs/d3.v3.min.js"></script>
+	</head>
+	<body style="background-color:#111;">
+		<script type="text/javascript">
+
+
+
+			var svg = d3.select('body').append("svg:svg")
+                .attr("width", '100%')
+                .attr("height", '100%');
+
+
+            var body = {
+            	width: $('body').width(),
+            	height: $('body').height()
+            }
+
+            $('body').on('resize', function () {
+            	body.width  = 	$('body').width();
+            	body.height = 	$('body').height();
+            });
+
+            var food = {
+            	count: 0,
+            	exist: false,
+            	pos: {
+
+            	},
+	            testaddremove: function (x, y) {
+	            	if(!food.exist)
+	            	{
+	            		var x = Math.random()*body.width;
+            			var y = Math.random()*body.height;
+
+            			// console.log(_.max(0, x))
+            			x = _.min([body.width, _.max([0, x])]);
+            			y = _.min([body.width, _.max([0, y])]); 
+
+            			food.pos.x = x;
+            			food.pos.y = y;
+
+            			var color = Math.random() * 360;
+            			var r = _.max([20, Math.random()*100]);
+            			food.r = r;
+	            		food.el = svg.append('circle')
+	            			.attr('filter', 'url(#css_blur)')
+			            	.attr('r', r)
+			            	.attr('cx', x)
+			            	.attr('cy', y)
+			            	.style("fill",function() {
+						    	return "hsl(" + color + ",100%,50%)";
+						    });
+
+			            food.exist = true
+	            	}
+	            	else
+	            	{
+	            		var diff = Math.sqrt(Math.pow(x-food.pos.x, 2)+Math.pow(y-food.pos.y, 2));
+	            		// console.log(diff+':'+food.r)
+	            		if(diff < food.r)
+	            		{
+	            			food.el
+		            			.transition()
+							    .duration(500)
+				            	.attr('r',0)
+				            	.attr('cx', x)
+				            	.attr('cy', y)
+				            	.style('opacity',0)
+		            			.remove();
+	            			food.count += 1;
+	            			food.exist = false;
+	            			food.testaddremove();
+	            		}
+	            	}
+	            }
+            }
+
+            var lastrxy = {
+            	r:5,
+            	x:100,
+            	y:100
+            };
+
+            var targetxy = {
+            	x:500,
+            	y:500
+            }
+
+            svg.append('filter')
+            	.attr('id', 'css_blur')
+            	.attr('x', '-50%')
+            	.attr('y', '-50%')
+            	.attr('width', '200%')
+            	.attr('height', '200%')
+            	.append('feGaussianBlur')
+            		.attr('stdDeviation', 1);
+
+            svg.on("mousemove", function(d,i) {
+			        var point = d3.mouse(this)
+			    	targetxy.x = point[0];
+			    	targetxy.y = point[1];
+			    	// console.log(targetxy)
+			    });
+
+            // var color = d3.scale.category20();
+
+            setInterval(function(){
+
+
+            	var offset = 10;
+
+            	lastrxy.x = lastrxy.x + (targetxy.x - lastrxy.x)/10;
+            	lastrxy.y = lastrxy.y + (targetxy.y - lastrxy.y)/10;
+
+
+            	var x1 = lastrxy.x+Math.random()*offset-offset/2;
+            	var y1 = lastrxy.y+Math.random()*offset-offset/2;
+
+            	offset = 100+Math.random()*100;
+
+            	var x2 = x1+Math.random()*offset-offset/2;
+            	var y2 = y1+Math.random()*offset-offset/2;
+
+            	var dur = (food.count+1)*100*Math.random();
+
+            	var color = (350+Math.random() * 10);
+            	//(350+Math.random() * 10)
+            	if(Math.random() > 0.8)
+            	{
+            		color = 30;
+            	}
+
+            	food.testaddremove(x1, y1);
+
+	            svg.append('circle')
+	            	.attr('filter', 'url(#css_blur)')
+	            	.attr('r', lastrxy.r+Math.random()*10)
+	            	.attr('cx', x1)
+	            	.attr('cy', y1)
+	            	// .style('stroke', 'white')
+	            	.style('opacity',0.9)	
+	            	.style("fill",function() {
+				    	return "hsl(" + color + ",100%,50%)";
+				    })
+	            	.transition()
+				    .duration(dur)
+	            	.attr('r',0)
+	            	.attr('cx', x2)
+	            	.attr('cy', y2)
+	            	.style('opacity',0)
+	            	.style("fill",function() {
+				    	return "hsl(" + Math.random()*color + ",100%,50%)";
+				    })
+	            	.remove();
+            }, 10);
+
+
+
+            setInterval
+		</script>
+	</body>
+</html>

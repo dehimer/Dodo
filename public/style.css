@@ -1,0 +1,28 @@
+.link {
+    stroke: #ccc;
+}
+
+.nodetext {
+    pointer-events: none;
+    font: 10px sans-serif;
+    fill: #eee;
+    strole:#111;
+}
+
+.node circle{
+    stroke-width:1;
+    stroke:#ccc;
+}
+
+.node.infected {
+    stroke:red;
+}
+
+.node.was_infected {
+    stroke:orange;
+}
+
+line.link {
+    stroke:url(#gradient_an);
+    stroke-width: 1.5;
+}
