@@ -1,2 +1,2 @@
 # Dodo
-Dynamic Graph of users connections for developed for one customer (Dodo
+Dynamic Graph of connected users developed for one my customer (dodo)
